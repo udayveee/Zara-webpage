@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zara Clone - Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      .swiper-container {
+        width: 100%;
+        height: 300px;
+      }
+      #toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #333;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+        z-index: 9999;
+      }
+      #toast.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md p-4 sticky top-0 z-50">
+      <div class="container mx-auto flex justify-between items-center">
+        <a href="index.html" class="text-2xl font-bold text-gray-800">ZARA</a>
+        <div>
+          <a href="index.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+          <a href="shop.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Shop</a>
+          <a href="cart.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Cart</a>
+          <a href="#" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Account</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Swiper Banner Slider -->
+    <div class="swiper-container my-8">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="banner1.jpg" class="w-full h-72 object-cover rounded-lg" alt="Banner 1" /></div>
+        <div class="swiper-slide"><img src="banner2.jpg" class="w-full h-72 object-cover rounded-lg" alt="Banner 2" /></div>
+        <div class="swiper-slide"><img src="banner3.jpg" class="w-full h-72 object-cover rounded-lg" alt="Banner 3" /></div>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="container mx-auto py-12 px-4">
+      <h2 class="text-4xl font-bold text-gray-800 text-center mb-10">Our Latest Collection</h2>
+
+      <!-- Filter Section (Static for now) -->
+      <div class="flex justify-center mb-6">
+        <button class="bg-white border px-4 py-2 rounded-md text-sm mx-2 hover:bg-gray-200">All</button>
+        <button class="bg-white border px-4 py-2 rounded-md text-sm mx-2 hover:bg-gray-200">Men</button>
+        <button class="bg-white border px-4 py-2 rounded-md text-sm mx-2 hover:bg-gray-200">Women</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8" id="product-grid">
+        <!-- Example Product Card -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 group">
+          <a href="#">
+            <img src="shirt.jpg" alt="Product" class="w-full h-80 object-cover rounded-md transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:brightness-110 group-hover:contrast-105" />
+          </a>
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-1">Crisp White Shirt</h3>
+            <p class="text-gray-600 text-sm mb-2">Men's Formal Wear</p>
+            <div class="flex justify-between items-center">
+              <span class="text-xl font-bold text-gray-900">₹1,899</span>
+              <button
+                class="bg-gray-800 text-white py-2 px-3 rounded-md hover:bg-gray-900 transition duration-300 text-sm flex items-center space-x-2 add-to-cart"
+                data-id="1"
+                data-name="Crisp White Shirt"
+                data-price="1899"
+              >
+                <i class="fas fa-cart-plus"></i>
+                <span>Add to Cart</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+      <div class="container mx-auto text-center">
+        <p>&copy; 2025 ZARA Clone. All rights reserved.</p>
+        <div class="flex justify-center mt-4 space-x-6">
+          <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+          <a href="#" class="hover:text-gray-400">Terms of Service</a>
+          <a href="#" class="hover:text-gray-400">Contact Us</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+      const swiper = new Swiper('.swiper-container', {
+        loop: true,
+        autoplay: {
+          delay: 3000,
+        },
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+      });
+
+      function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2000);
+      }
+
+      document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', () => {
+          const product = {
+            id: button.dataset.id,
+            name: button.dataset.name,
+            price: button.dataset.price,
+            quantity: 1
+          };
+
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          const existing = cart.find(item => item.id === product.id);
+
+          if (existing) {
+            existing.quantity++;
+          } else {
+            cart.push(product);
+          }
+
+          localStorage.setItem('cart', JSON.stringify(cart));
+          showToast(`${product.name} added to cart!`);
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cart - Zara Clone</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md p-4 sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold text-gray-800">ZARA</a>
+      <div>
+        <a href="index.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+        <a href="shop.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Shop</a>
+        <a href="cart.html" class="text-gray-900 font-bold px-3 py-2 rounded-md text-sm font-medium">Cart</a>
+        <a href="terms.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Terms & Policy</a>
+        <a href="#" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Account</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Cart Content -->
+  <main class="container mx-auto py-12 px-4 max-w-5xl bg-white rounded-lg shadow-md my-12">
+    <h1 class="text-4xl font-bold mb-8 text-gray-800 text-center">Your Cart</h1>
+    <div id="cart-items" class="space-y-6">
+      <!-- Cart items will appear here -->
+    </div>
+    <div id="empty-cart" class="text-center text-gray-500 text-lg mt-10">
+      Your cart is empty.
+    </div>
+
+    <div class="mt-12 flex justify-end items-center space-x-6">
+      <span class="text-2xl font-semibold text-gray-800" id="total-price">Total: ₹0</span>
+      <button id="clear-cart" class="bg-red-600 text-white px-5 py-2 rounded-md hover:bg-red-700 transition duration-300">
+        Clear Cart
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="container mx-auto text-center">
+      <p>&copy; 2025 ZARA Clone. All rights reserved.</p>
+      <div class="flex justify-center mt-4 space-x-6">
+        <a href="policy.html" class="hover:text-gray-400">Privacy Policy</a>
+        <a href="services.html" class="hover:text-gray-400">Terms & service</a>
+        <a href="contact.html" class="hover:text-gray-400">Contact Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const cartItemsContainer = document.getElementById('cart-items');
+    const emptyCartMsg = document.getElementById('empty-cart');
+    const totalPriceEl = document.getElementById('total-price');
+    const clearCartBtn = document.getElementById('clear-cart');
+
+    // Load cart from localStorage or initialize empty array
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function renderCart() {
+      cartItemsContainer.innerHTML = '';
+      if (cart.length === 0) {
+        emptyCartMsg.style.display = 'block';
+        totalPriceEl.textContent = 'Total: ₹0';
+        clearCartBtn.style.display = 'none';
+        return;
+      }
+
+      emptyCartMsg.style.display = 'none';
+      clearCartBtn.style.display = 'inline-block';
+
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price * item.quantity;
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'flex items-center space-x-6 border-b pb-4';
+
+        itemDiv.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" class="w-24 h-24 object-cover rounded-md" />
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-gray-800">${item.name}</h3>
+            <p class="text-gray-600">${item.description}</p>
+            <p class="mt-1 font-semibold">₹${item.price} x ${item.quantity}</p>
+          </div>
+          <div class="flex flex-col items-center space-y-2">
+            <button class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400" onclick="changeQuantity(${index}, -1)">-</button>
+            <span>${item.quantity}</span>
+            <button class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400" onclick="changeQuantity(${index}, 1)">+</button>
+            <button class="mt-2 text-red-600 hover:text-red-800" onclick="removeItem(${index})" title="Remove item">🗑️</button>
+          </div>
+        `;
+
+        cartItemsContainer.appendChild(itemDiv);
+      });
+
+      totalPriceEl.textContent = `Total: ₹${total}`;
+    }
+
+    function changeQuantity(index, delta) {
+      cart[index].quantity += delta;
+      if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+      }
+      saveCart();
+      renderCart();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      saveCart();
+      renderCart();
+    }
+
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    clearCartBtn.addEventListener('click', () => {
+      cart = [];
+      saveCart();
+      renderCart();
+    });
+
+    renderCart();
+
+    // For demo: If you want to add from console, you can do:
+    // addToCart({name:'Product', price: 100, image:'img.jpg', description:'desc', quantity:1})
+
+    function addToCart(product) {
+      // Check if product already in cart
+      const existingIndex = cart.findIndex(item => item.name === product.name);
+      if (existingIndex > -1) {
+        cart[existingIndex].quantity += product.quantity;
+      } else {
+        cart.push(product);
+      }
+      saveCart();
+      renderCart();
+    }
+
+    // Expose addToCart globally so other pages/scripts can call it
+    window.addToCart = addToCart;
+  </script>
+</body>
+</html>
